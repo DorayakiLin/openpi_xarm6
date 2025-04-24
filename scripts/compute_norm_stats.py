@@ -40,7 +40,12 @@ def create_dataset(config: _config.TrainConfig) -> tuple[_config.DataConfig, _da
 def main(config_name: str, max_frames: int | None = None):
     config = _config.get_config(config_name)
     data_config, dataset = create_dataset(config)
+    # 尝试访问第一个样本
+    print("Checking dataset sample...")
+    print(dataset[0])  # 确保 __getitem__() 不会报错
 
+    num_frames = len(dataset)
+    print(f"Total frames: {num_frames}")
     num_frames = len(dataset)
     shuffle = False
 
@@ -58,9 +63,9 @@ def main(config_name: str, max_frames: int | None = None):
 
     keys = ["state", "actions"]
     stats = {key: normalize.RunningStats() for key in keys}
-
     for batch in tqdm.tqdm(data_loader, total=num_frames, desc="Computing stats"):
         for key in keys:
+            
             values = np.asarray(batch[key][0])
             stats[key].update(values.reshape(-1, values.shape[-1]))
 
