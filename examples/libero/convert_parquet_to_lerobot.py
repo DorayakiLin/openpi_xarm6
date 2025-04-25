@@ -45,6 +45,7 @@ def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
 
 def main(data_dir: str, *, push_to_hub: bool = False):
     output_path = LEROBOT_HOME / REPO_NAME
+    print("output_path", output_path)
     if output_path.exists():
         shutil.rmtree(output_path)
 
