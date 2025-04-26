@@ -1,4 +1,5 @@
 import dataclasses
+
 import einops
 import numpy as np
 
@@ -59,17 +60,15 @@ class xarm6Inputs(transforms.DataTransformFn):
         }
 
         if "actions" in data:
-
             actions = transforms.pad_to_dim(data["actions"], self.action_dim)
             inputs["actions"] = actions
-        
+
         inputs["prompt"] = "pick up the bottle and put it in the box"
 
         return inputs
-    
+
 
 @dataclasses.dataclass(frozen=True)
 class xarm6Outputs(transforms.DataTransformFn):
-
     def __call__(self, data: dict) -> dict:
         return {"actions": np.asarray(data["actions"][:, :7])}

@@ -1,9 +1,10 @@
 import logging
+from pathlib import Path
 
 import numpy as np
 import sentencepiece
 from transformers import AutoProcessor
-from pathlib import Path
+
 import openpi.shared.download as download
 
 

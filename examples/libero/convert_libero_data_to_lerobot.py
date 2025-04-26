@@ -25,12 +25,9 @@ from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
 import tensorflow_datasets as tfds
 import tyro
 
-REPO_NAME = "your_hf_username/libero"  # Name of the output dataset, also used for the Hugging Face Hub
+REPO_NAME = "DorayakiLin"  # Name of the output dataset, also used for the Hugging Face Hub
 RAW_DATASET_NAMES = [
-    "libero_10_no_noops",
-    "libero_goal_no_noops",
-    "libero_object_no_noops",
-    "libero_spatial_no_noops",
+     "xarm_pick_bottle_100",
 ]  # For simplicity we will combine multiple Libero datasets into one training dataset
 
 
@@ -45,8 +42,8 @@ def main(data_dir: str, *, push_to_hub: bool = False):
     # LeRobot assumes that dtype of image data is `image`
     dataset = LeRobotDataset.create(
         repo_id=REPO_NAME,
-        robot_type="panda",
-        fps=10,
+        robot_type="xarm6",
+        fps=30,
         features={
             "image": {
                 "dtype": "image",

@@ -19,9 +19,9 @@ import openpi.models.pi0_fast as pi0_fast
 import openpi.models.tokenizer as _tokenizer
 import openpi.policies.aloha_policy as aloha_policy
 import openpi.policies.droid_policy as droid_policy
+import openpi.policies.lerobot_so100_policy as lerobot_so100_policy
 import openpi.policies.libero_policy as libero_policy
 import openpi.policies.xarm6_policy as xarm6_policy
-import openpi.policies.lerobot_so100_policy as lerobot_so100_policy
 import openpi.shared.download as _download
 import openpi.shared.normalize as _normalize
 import openpi.training.optimizer as _optimizer
@@ -324,6 +324,7 @@ class LeRobotLiberoDataConfig(DataConfigFactory):
             model_transforms=model_transforms,
         )
 
+
 #####################################################################################################
 ####xarm#######
 @dataclasses.dataclass(frozen=True)
@@ -368,7 +369,6 @@ class LeRobotxarm6DataConfig(DataConfigFactory):
         )
 
 
-
 #####################################################################################################
 @dataclasses.dataclass(frozen=True)
 class LeRobotso100DataConfig(DataConfigFactory):
@@ -392,7 +392,9 @@ class LeRobotso100DataConfig(DataConfigFactory):
         # Prepare data for policy training
         # Convert images to uint8 numpy arrays, add masks
         data_transforms = _transforms.Group(
-            inputs=[lerobot_so100_policy.so100Inputs(action_dim=model_config.action_dim, model_type=model_config.model_type)],
+            inputs=[
+                lerobot_so100_policy.so100Inputs(action_dim=model_config.action_dim, model_type=model_config.model_type)
+            ],
             outputs=[lerobot_so100_policy.so100Outputs()],
         )
         # Use delta actions (not for gripper)
@@ -411,6 +413,7 @@ class LeRobotso100DataConfig(DataConfigFactory):
             data_transforms=data_transforms,
             model_transforms=model_transforms,
         )
+
 
 @dataclasses.dataclass(frozen=True)
 class TrainConfig:
@@ -617,9 +620,9 @@ _CONFIGS = [
         # Turn off EMA for LoRA finetuning.
         ema_decay=None,
     ),
-#
-# Fine-tuning so100 configs.
-#
+    #
+    # Fine-tuning so100 configs.
+    #
     TrainConfig(
         name="pi0_so100_low_mem_finetune",
         model=pi0.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
@@ -661,29 +664,28 @@ _CONFIGS = [
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_fast_base/params"),
         num_train_steps=30_000,
     ),
-#########################################################################################
+    #########################################################################################
     TrainConfig(
         name="pi0_xarm6",
         model=pi0.Pi0Config(),
         data=LeRobotxarm6DataConfig(
             repo_id="DorayakiLin_parquet",  # HuggingFace 或本地 repo id
             base_config=DataConfig(
-                local_files_only=True,        # 若本地数据集不需要从 HF 下载
+                local_files_only=True,  # 若本地数据集不需要从 HF 下载
                 prompt_from_task=False,
             ),
         ),
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
         num_train_steps=10000,
     ),
-
     TrainConfig(
         name="pi0_xarm6_low_mem_finetune",
         # Here is an example of loading a pi0 model for LoRA fine-tuning.
         model=pi0.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
-        data=LeRobotLiberoDataConfig(
-            repo_id="DorayakiLin_parquet",
+        data=LeRobotxarm6DataConfig(
+            repo_id="DorayakiLin_parquet_100",
             base_config=DataConfig(
-                local_files_only=True,        # 若本地数据集不需要从 HF 下载
+                local_files_only=True,  # 若本地数据集不需要从 HF 下载
                 prompt_from_task=False,
             ),
         ),
@@ -698,7 +700,7 @@ _CONFIGS = [
         ).get_freeze_filter(),
         # Turn off EMA for LoRA finetuning.
         ema_decay=None,
-    ),   
+    ),
     ####################################################################
     TrainConfig(
         name="pi0_fast_libero_low_mem_finetune",

@@ -1,14 +1,14 @@
-import os
-import shutil
-import numpy as np
-import cv2
-import pyarrow.parquet as pq
 from pathlib import Path
+import shutil
 
-from lerobot.common.datasets.lerobot_dataset import LEROBOT_HOME, LeRobotDataset
+import cv2
+from lerobot.common.datasets.lerobot_dataset import LEROBOT_HOME
+from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
+import numpy as np
+import pyarrow.parquet as pq
 import tyro
 
-REPO_NAME = "DorayakiLin_parquet"  # 可改成你希望的输出子目录名
+REPO_NAME = "DorayakiLin_parquet_100"  # 可改成你希望的输出子目录名
 
 
 def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
@@ -31,12 +31,14 @@ def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
             state = np.array(row["state"][0], dtype=np.float32)
             action = np.array(row["action"][0], dtype=np.float32)
 
-            dataset.add_frame({
-                "image_1": img1,
-                "image_2": img2,
-                "state": state,
-                "actions": action,
-            })
+            dataset.add_frame(
+                {
+                    "image_1": img1,
+                    "image_2": img2,
+                    "state": state,
+                    "actions": action,
+                }
+            )
 
         task_name = f"episode_{file_idx:03d}"
         dataset.save_episode(task=task_name)
