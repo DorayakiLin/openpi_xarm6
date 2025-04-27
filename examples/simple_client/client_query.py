@@ -20,7 +20,7 @@ client = websocket_client_policy.WebsocketClientPolicy(host="localhost", port=80
 
 
 # 设置模拟参数
-num_steps = 120  # 要推理多少步
+num_steps = 60  # 要推理多少步
 resize_size = 224  # 图像 resize 到多大
 action_horizon = 16  # 每次 infer 返回的动作步长，具体看模型设置（通常是16）
 task_instruction = "pick the bottle and put it into the box"  # 给定固定指令文本
