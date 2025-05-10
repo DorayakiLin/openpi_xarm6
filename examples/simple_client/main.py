@@ -15,15 +15,15 @@ class EnvMode(enum.Enum):
     ALOHA_SIM = "aloha_sim"
     DROID = "droid"
     LIBERO = "libero"
-
+    XARM6 = "xarm6"
 
 @dataclasses.dataclass
 class Args:
     host: str = "0.0.0.0"
     port: int = 8000
-
-    env: EnvMode = EnvMode.ALOHA_SIM
-    num_steps: int = 10
+    
+    env: EnvMode = EnvMode.XARM6
+    num_steps: int = 100
 
 
 def main(args: Args) -> None:
@@ -32,6 +32,7 @@ def main(args: Args) -> None:
         EnvMode.ALOHA_SIM: _random_observation_aloha,
         EnvMode.DROID: _random_observation_droid,
         EnvMode.LIBERO: _random_observation_libero,
+        EnvMode.XARM6: _random_observation_xarm6,
     }[args.env]
 
     policy = _websocket_client_policy.WebsocketClientPolicy(
@@ -45,7 +46,8 @@ def main(args: Args) -> None:
 
     start = time.time()
     for _ in range(args.num_steps):
-        policy.infer(obs_fn())
+        actions = policy.infer(obs_fn())
+        print(actions)
     end = time.time()
 
     print(f"Total time taken: {end - start:.2f} s")
@@ -83,6 +85,15 @@ def _random_observation_libero() -> dict:
         "prompt": "do something",
     }
 
+def _random_observation_xarm6() -> dict:
+    """新增：随机生成符合 xarm6 输入格式的 observation"""
+    return {
+        "observation/state": np.random.rand(7),  # xarm6 是7维 state
+        "observation/image": np.random.randint(256, size=(224, 224, 3), dtype=np.uint8),  # base camera
+        "observation/wrist_image": np.random.randint(256, size=(224, 224, 3), dtype=np.uint8),  # wrist camera
+        "prompt": "pick the bottle and put in box",  # 也可以写成随机的
+    }
+    
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

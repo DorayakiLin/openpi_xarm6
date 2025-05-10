@@ -8,7 +8,7 @@ import numpy as np
 import pyarrow.parquet as pq
 import tyro
 
-REPO_NAME = "DorayakiLin_parquet_100"  # 可改成你希望的输出子目录名
+REPO_NAME = "DorayakiLin_parquet_pick_sprite_100_v1"  # 可改成你希望的输出子目录名
 
 
 def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
@@ -22,7 +22,7 @@ def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
 
         for i in range(num_rows):
             row = table.slice(i, 1).to_pydict()
-
+            
             img1_bytes = row["image_1"][0]
             img2_bytes = row["image_2"][0]
             img1 = cv2.imdecode(np.frombuffer(img1_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)
@@ -40,9 +40,15 @@ def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
                 }
             )
 
-        task_name = f"episode_{file_idx:03d}"
-        dataset.save_episode(task=task_name)
-        print(f"[✔] Saved episode: {task_name}")
+        prompt_bytes = row["prompt"][0]
+        prompt_str = prompt_bytes.decode("utf-8")
+
+        dataset.save_episode(task=prompt_str)
+        print(f"[✔] Saved episode {file_idx:03d} with task prompt: {prompt_str}")
+
+        # task_name = f"episode_{file_idx:03d}"
+        # dataset.save_episode(task=task_name)
+        # print(f"[✔] Saved episode: {task_name}")
 
 
 def main(data_dir: str, *, push_to_hub: bool = False):

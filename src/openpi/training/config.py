@@ -669,24 +669,24 @@ _CONFIGS = [
         name="pi0_xarm6",
         model=pi0.Pi0Config(),
         data=LeRobotxarm6DataConfig(
-            repo_id="DorayakiLin_parquet",  # HuggingFace 或本地 repo id
+            repo_id="DorayakiLin_parquet_100_v2",  # HuggingFace 或本地 repo id
             base_config=DataConfig(
                 local_files_only=True,  # 若本地数据集不需要从 HF 下载
-                prompt_from_task=False,
+                prompt_from_task=True,
             ),
         ),
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
-        num_train_steps=10000,
+        num_train_steps=5_000,
     ),
     TrainConfig(
         name="pi0_xarm6_low_mem_finetune",
         # Here is an example of loading a pi0 model for LoRA fine-tuning.
         model=pi0.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
         data=LeRobotxarm6DataConfig(
-            repo_id="DorayakiLin_parquet_100",
+            repo_id="DorayakiLin_parquet_140_v3",
             base_config=DataConfig(
                 local_files_only=True,  # 若本地数据集不需要从 HF 下载
-                prompt_from_task=False,
+                prompt_from_task=True,
             ),
         ),
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),

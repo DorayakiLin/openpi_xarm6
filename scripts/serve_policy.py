@@ -2,7 +2,7 @@ import dataclasses
 import enum
 import logging
 import socket
-
+import time
 import tyro
 
 from openpi.policies import policy as _policy
@@ -18,7 +18,7 @@ class EnvMode(enum.Enum):
     ALOHA_SIM = "aloha_sim"
     DROID = "droid"
     LIBERO = "libero"
-
+    XARM6 = "xarm6"
 
 @dataclasses.dataclass
 class Checkpoint:
@@ -40,7 +40,7 @@ class Args:
     """Arguments for the serve_policy script."""
 
     # Environment to serve the policy for. This is only used when serving default policies.
-    env: EnvMode = EnvMode.ALOHA_SIM
+    env: EnvMode = EnvMode.XARM6
 
     # If provided, will be used in case the "prompt" key is not present in the data, or if the model doesn't have a default
     # prompt.
@@ -72,6 +72,10 @@ DEFAULT_CHECKPOINT: dict[EnvMode, Checkpoint] = {
     EnvMode.LIBERO: Checkpoint(
         config="pi0_fast_libero",
         dir="s3://openpi-assets/checkpoints/pi0_fast_libero",
+    ),
+    EnvMode.XARM6: Checkpoint(
+        config="pi0_xarm6",   # ✅ 你的xarm6 config名字
+        dir="/root/private_data/openpi/checkpoints/pi0_xarm6_low_mem_finetune/xarm6_pick_bottle_lora/2000",   # ✅ 你本地保存的xarm6 checkpoint路径
     ),
 }
 
