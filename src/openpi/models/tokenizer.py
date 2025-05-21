@@ -13,7 +13,7 @@ class PaligemmaTokenizer:
         self._max_len = max_len
 
         # path = download.maybe_download("gs://big_vision/paligemma_tokenizer.model", gs={"token": "anon"})
-        path = Path("/home/bozhao/code/openpi_lt/openpi_model/paligemma_tokenizer.model")
+        path = Path("/root/private_data/openpi_model/paligemma_tokenizer.model")
         with path.open("rb") as f:
             self._tokenizer = sentencepiece.SentencePieceProcessor(model_proto=f.read())
 

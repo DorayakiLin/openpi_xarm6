@@ -13,7 +13,7 @@ def make_xarm6_example() -> dict:
         "observation/state": np.random.rand(7),
         "observation/image": np.random.randint(256, size=(1080, 1920, 3), dtype=np.uint8),
         "observation/wrist_image": np.random.randint(256, size=(720, 1280, 3), dtype=np.uint8),
-        "prompt": "do something",
+        "prompt": "pick the bread and put it in the basket",
     }
 
 
@@ -63,7 +63,8 @@ class xarm6Inputs(transforms.DataTransformFn):
             actions = transforms.pad_to_dim(data["actions"], self.action_dim)
             inputs["actions"] = actions
 
-        inputs["prompt"] = "pick up the bottle and put it in the box"
+        if "prompt" in data:
+            inputs["prompt"] = data["prompt"]
 
         return inputs
 

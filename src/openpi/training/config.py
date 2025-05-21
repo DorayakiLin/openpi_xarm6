@@ -341,6 +341,7 @@ class LeRobotxarm6DataConfig(DataConfigFactory):
                         "observation/wrist_image": "image_2",
                         "observation/state": "state",
                         "actions": "actions",
+                        "prompt": "prompt",
                     }
                 )
             ]
@@ -683,14 +684,14 @@ _CONFIGS = [
         # Here is an example of loading a pi0 model for LoRA fine-tuning.
         model=pi0.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
         data=LeRobotxarm6DataConfig(
-            repo_id="DorayakiLin_parquet_140_v3",
+            repo_id="DorayakiLin_parquet_pick_coke_sprite_fanta_bread_oreo_v1",
             base_config=DataConfig(
                 local_files_only=True,  # 若本地数据集不需要从 HF 下载
                 prompt_from_task=True,
             ),
         ),
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
-        num_train_steps=5_000,
+        num_train_steps=15_000,
         # The freeze filter defines which parameters should be frozen during training.
         # We have a convenience function in the model config that returns the default freeze filter
         # for the given model config for LoRA finetuning. Just make sure it matches the model config

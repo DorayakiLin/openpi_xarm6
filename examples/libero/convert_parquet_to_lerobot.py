@@ -8,7 +8,7 @@ import numpy as np
 import pyarrow.parquet as pq
 import tyro
 
-REPO_NAME = "DorayakiLin_parquet_pick_sprite_100_v1"  # 可改成你希望的输出子目录名
+REPO_NAME = "DorayakiLin_parquet_pick_bread_v1"  # 可改成你希望的输出子目录名
 
 
 def convert_parquet_to_lerobot(parquet_dir: str, dataset: LeRobotDataset):
